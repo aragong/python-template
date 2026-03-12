@@ -1,4 +1,4 @@
-"""OpenTelemetry simplified setup for TESEO API."""
+"""OpenTelemetry simplified setup."""
 
 from __future__ import annotations
 
@@ -41,11 +41,10 @@ def setup_opentelemetry() -> None:
             }
         )
 
-        # # --- TRACES SETUP (following official pattern) ---
+        # --- TRACES SETUP (following official pattern) ---
         traces_setup(base_endpoint, resource) if env.EXPORT_TRACES else None
 
         # --- INSTRUMENTATIONS (automatic, like official examples) ---
-        # NOTE: FastAPI instrumentation will be done after app creation in main.py
         instrumentations_setup()
 
         # --- LOGS SETUP (simplified) ---
@@ -57,7 +56,7 @@ def setup_opentelemetry() -> None:
         logger.debug("🏷️ Service version: %s", resource.attributes["service.version"])
         logger.debug("🆕 Service instance-UUID: %s", resource.attributes["service.instance-uuid"])
         logger.debug("🔗 OTLP base endpoint: %s", base_endpoint)
-        logger.debug("Automated instrumentation (spans and traces) for FastAPI and other libraries set up.")
+        logger.debug("Automated instrumentation (spans and traces) for HTTP libraries set up.")
 
     except Exception:
         logger.exception("❌ OpenTelemetry setup failed")
@@ -77,7 +76,6 @@ def instrumentations_setup() -> None:
 
 def traces_setup(base_endpoint: str, resource: Resource) -> None:
     """Set up trace instrumentation."""
-    # FastAPI instrumentation will be done after app creation in main.py
     traces_endpoint = f"{base_endpoint.rstrip('/')}/traces"
 
     # Set up tracer provider (like the official example)

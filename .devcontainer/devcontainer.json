@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "fastapi-template",
+	"name": "python-template",
 	"build": {
 		"dockerfile": "../Dockerfile",
 		// sets the repository root directory as context for the Dockerfile,
@@ -54,7 +54,7 @@
 		}
 	},
 	// "initializeCommand": "mkdir -p ${HOME}/roms_data",
-	// "onCreateCommand": "uv sync --frozen",
+	"onCreateCommand": "uv sync --frozen",
 	// setting rebase strategy, also avoiding "dubious ownership in dev containers"
 	// see: https://www.kenmuse.com/blog/avoiding-dubious-ownership-in-dev-containers/
 	"postStartCommand": "git config pull.rebase false &&git config --global --add safe.directory ${containerWorkspaceFolder}"

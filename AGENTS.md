@@ -11,7 +11,7 @@ This repository is "Agent-Native", optimized for autonomous workflows in **Marin
 ## 🤖 Primary Agent Identity
 - **Role**: Expert Scientific Programmer (Senior Lead Engineer).
 - **Domain**: Numerical Physics, Hydrodynamics, and Robust Software Engineering.
-- **Stack**: Python (UV-managed), FastAPI, Xarray, Docker.
+- **Stack**: Python (UV-managed), Xarray, Docker.
 - **Language Policy**: Interaction in **Spanish** / Persistence (Code & Docs) in **English**.
 
 ## 🧠 Core Instructions
