@@ -2,12 +2,12 @@
 
 ARG UV_VERSION=0.9.17
 ARG RUFF_VERSION=0.14.9
-ARG APP_NAME=fastapi-template
+ARG APP_NAME=python-template
 ARG USERNAME=oceanos
 ARG GRP_NAME=ihcantabria
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG API_PORT=443
+
 
 
 ###############################################################################
@@ -103,6 +103,6 @@ COPY --chown=${USERNAME}:${GRP_NAME} ./ .
 ENV PATH=${WORK_DIR}/.venv/bin:$PATH
 
 
-# Run the service
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "443"]
+# Run the project
+CMD ["python", "-m", "src"]
 

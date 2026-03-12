@@ -1,4 +1,4 @@
-"""Environment variables management for TESEO API Process."""
+"""Environment variables management."""
 
 import os
 from dotenv import load_dotenv
@@ -18,10 +18,6 @@ class Environment:
             f"Invalid APP_ENVIRONMENT: {APP_ENVIRONMENT}. Must be one of 'local', 'development', 'production'."
         )
 
-    # API specific
-    API_ROOT_PATH = os.getenv("API_ROOT_PATH", "")
-    API_PREFIX = os.getenv("API_PREFIX", "")
-
     # Directories
     _dir = os.getenv("TMP_DIR", "./tmp")
     TMP_DIR = Path(_dir)
@@ -37,9 +33,6 @@ class Environment:
 
     OTEL_EXPORTER_OTLP_ENDPOINT = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
     OTEL_EXPORTER_OTLP_PROTOCOL = os.getenv("OTEL_EXPORTER_OTLP_PROTOCOL")
-
-    _excluded_urls = os.getenv("OTEL_PYTHON_EXCLUDED_URLS", "")
-    OTEL_PYTHON_EXCLUDED_URLS = _excluded_urls.split(",") if _excluded_urls else []
 
     # Environment detection
     ENV = os.getenv("ENV", "development")

@@ -3,11 +3,11 @@
 import tomllib
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 
 @lru_cache(maxsize=1)
-def _load_project_metadata() -> Dict[str, Any]:
+def _load_project_metadata() -> dict[str, Any]:
     """Load project metadata from pyproject.toml with caching."""
     # Find pyproject.toml relative to this file
     current_dir = Path(__file__).parent

@@ -1,4 +1,4 @@
-"""API to provide online simulation service of TESEO numerical model."""
+"""Python project template."""
 
 from src.__version__ import __api_name__, __description__, __version__
 

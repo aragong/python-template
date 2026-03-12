@@ -50,7 +50,7 @@ jobs:
           ssh-key: ${{ secrets.GH_DEPLOY }}
 
       - name: Build Docker image without Buildx (for compatibility with Ansible playbook)
-        run: DOCKER_BUILDKIT=0 docker build --build-arg GITHUB_TOKEN=${{ secrets.PAT }} --target deployment -t fastapi-template .
+        run: DOCKER_BUILDKIT=0 docker build --build-arg GITHUB_TOKEN=${{ secrets.PAT }} --target deployment -t python-template .
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -71,7 +71,7 @@ jobs:
         run: |
           BUMP_VERSION_PART=${{ inputs.bump_version_part || env.DEFAULT_BUMP_VERSION_PART }}
           NEW_VERSION=$(uvx --from bump2version bumpversion --list ${BUMP_VERSION_PART} | grep new_version | sed -r s,"^.*=",,)
-          uv lock --upgrade-package fastapi-template
+          uv lock --upgrade-package python-template
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add .bumpversion.cfg pyproject.toml uv.lock
