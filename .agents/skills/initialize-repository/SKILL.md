@@ -1,12 +1,12 @@
 ---
 name: initialize-repository
-description: Use this skill to bootstrap a new project from the `fastapi-template` by renaming all template placeholders, updating metadata fields, and generating a tailored `README.md` based on user-provided information. Triggered when the user asks to "initialize the repo", "set up the project", or "rename the template".
+description: Use this skill to bootstrap a new project from the `python-template` by renaming all template placeholders, updating metadata fields, and generating a tailored `README.md` based on user-provided information. Triggered when the user asks to "initialize the repo", "set up the project", or "rename the template".
 --- 
 
 # SKILL: initialize_repository
 
 ## Definition
-- **Purpose**: Bootstrap a new project from the `fastapi-template` using `uv` for dependency management and environment isolation.
+- **Purpose**: Bootstrap a new project from the `python-template` using `uv` for dependency management and environment isolation.
 - **Activation**: Triggered by phrases like "initialize the repo", "set up the project", or "rename the template".
 
 ## Protocol (Step-by-Step)
@@ -22,25 +22,18 @@ Before making any change, resolve the default project name and then ask the user
 
 ### Phase 2 — Update pyproject.toml
 Replace the following fields in `pyproject.toml`:
-- project.name: "fastapi-template" -> {project_name}
+- project.name: "python-template" -> {project_name}
 - project.description: "Add description here" -> {description}
 - project.authors[0].name: {author_name}
 - project.authors[0].email: {author_email}
 - project.urls.github: "" -> {repo_url}
 
 ### Phase 3 — Update Docker & DevContainer & github workflows
-- **Dockerfile**: Replace `ARG APP_NAME=fastapi-template` with `ARG APP_NAME={project_name}`.
-- **.devcontainer/devcontainer.json**: Replace `"name": "fastapi-template"` with `"{project_name}"`.
-- **GitHub Workflows**: Search for "fastapi-template" in `.github/workflows/` and replace with `{project_name}`.
+- **Dockerfile**: Replace `ARG APP_NAME=python-template` with `ARG APP_NAME={project_name}`.
+- **.devcontainer/devcontainer.json**: Replace `"name": "python-template"` with `"{project_name}"`.
+- **GitHub Workflows**: Search for `python-template` in `.github/workflows/` and replace it with `{project_name}` when present.
 
-### Phase 4 — Generate .env file
-Create the `.env` file on-the-fly. This file must **never** be committed to the repository.
-
-1. **Verify `.gitignore` contains `.env`**: Run `grep -q '^.env$' .gitignore || echo '.env' >> .gitignore`.
-2. **Extract variables from `README.md`**: Read the `## 🔧 Environment Variables` section of `README.md` to obtain the canonical list of variables and their default values. That section is the single source of truth.
-3. **Generate the file** using those exact variables and defaults, replacing `OTEL_SERVICE_NAME` default value with `{project_name}`.
-
-### Phase 5 — Generate UV-Native README.md
+### Phase 4 — Generate UV-Native README.md
 Overwrite `README.md` entirely using the following structure:
 
 # {project_name}
@@ -57,11 +50,14 @@ cd {project_name}
 # Install dependencies and create .venv
 uv sync --all-packages
 
-# Run development server
-uv run uvicorn src.main:app --reload
+# Run the package
+uv run python -m src
 
 # Run tests
 uv run pytest
+
+# Lint
+uv run ruff check .
 
 ## Environment Variables
 APP_ENV=local
@@ -72,6 +68,13 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 Author: {author_name} <{author_email}>
 Repository: {repo_url}
 
+### Phase 5 — Generate .env file
+Create the `.env` file on-the-fly. This file must **never** be committed to the repository.
+
+1. **Verify `.gitignore` contains `.env`**: Run `grep -q '^.env$' .gitignore || echo '.env' >> .gitignore`.
+2. **Extract variables from `README.md`**: Read the `## Environment Variables` section generated in Phase 4. That section is the canonical source of variables and default values.
+3. **Generate the file** using those exact variables and defaults.
+
 ### Phase 6 — Environment Synchronization (UV)
 1. **Update Lockfile**: Run `uv lock`. This is mandatory after changing the project name.
 2. **Synchronize Environment**: Run `uv sync --all-packages`. This will create the .venv and install the project in editable mode under the new name.
@@ -79,7 +82,7 @@ Repository: {repo_url}
 
 ### Phase 7 — Verification Checklist
 The agent MUST run these commands and confirm success:
-- [ ] `grep -r "fastapi-template" .` (must return zero matches, excluding .git/)
+- [ ] `grep -r "python-template" . --exclude-dir=.git` (must return zero matches)
 - [ ] `uv run python -c "from src.__version__ import __api_name__; print(__api_name__)"` (must match {project_name})
 - [ ] `uv run pytest` (must exit with code 0)
 - [ ] `uv run ruff check .` (must exit with code 0)
