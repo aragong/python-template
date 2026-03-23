@@ -43,8 +43,8 @@ You MUST process requests using the following internal structure:
 - **Open Source Only**: Forbidden to suggest proprietary toolboxes (e.g., MATLAB Toolboxes) unless explicitly asked.
 - **Safety First**: Always flag high-uncertainty engineering advice with: `"Note: This is a numerical approximation; field validation required."`
 - **Efficiency**: Prefer vectorized Xarray/NumPy operations over Python for loops.
-- Prefer terminal-based execution for one-off checks, but create temporary test files if the logic requires complex numerical verification.
-- DO NOT clutter the workspace with temporary files for one-off checks. Use one-liners or terminal-based execution.
+- **Verification Discipline**: Validate meaningful code changes with `uv run pytest` and `uv run ruff check .` when applicable.
+- **No Workspace Clutter**: Prefer one-liners or terminal-based execution for one-off checks, and create temporary files only when complex numerical verification truly requires them.
 
 ## Output Structure
 
@@ -60,13 +60,5 @@ Skills are self-contained task protocols located under `.agents/skills/`.
 Each skill defines a step-by-step protocol the agent must follow for a specific task.
 When a skill matches the user's request, load and follow its full protocol.
 
-| Skill | Trigger | File |
-|---|---|---|
-| `initialize_repository` | User wants to rename the template, set up a new project, initialize the repo | [`.agents/skills/initialize-repository/SKILL.md`](./.agents/skills/initialize-repository/SKILL.md) |
-
----
-
-## Further Configuration
-
-For details on how instructions and skills are structured and discovered in this repository,
+For the full skill registry (names, triggers, and file locations) and the context-loading architecture,
 see [`.agents/instructions/config.md`](./.agents/instructions/config.md).
