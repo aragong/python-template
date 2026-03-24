@@ -4,32 +4,32 @@ version: 1.0
 standard: Agentic-AI-Interoperability-Alliance
 ---
 
-# Configuración del Entorno del Agente
+# Agent Environment Configuration
 
-Este repositorio utiliza el estándar de la **Agentic AI Interoperability Alliance** para la gestión de capacidades y comportamiento del agente.
+This repository uses the **Agentic AI Interoperability Alliance** standard for managing agent capabilities and behavior.
 
-## 📂 Arquitectura de Referencia
+## 📂 Reference Architecture
 
-El agente debe buscar y cargar contexto siguiendo estrictamente esta jerarquía:
+The agent must discover and load context by strictly following this hierarchy:
 
-1.  **`.agents/instructions/`**: Contiene las reglas de comportamiento.
-    *   `global.md`: Instrucciones base que deben aplicarse a todas las interacciones.
-    *   Instrucciones de dominio (ej. `backend.md`): Solo deben cargarse si el scope de la tarea afecta a dichos directorios.
+1. **`.agents/instructions/`**: Contains behavioral rules.
+    * `global.md`: Base instructions that must apply to all interactions.
+    * Domain-specific instructions (e.g., `backend.md`): Load only if the task scope affects those directories.
 
-2.  **`.agents/skills/`**: Contiene capacidades ejecutables (Tool-use).
-    *   Cada subdirectorio representa una **Skill Activa**.
-    *   El agente debe leer el archivo `SKILL.md` de cada subcarpeta para identificar la descripción (`description`) y los metadatos de activación.
-    *   No se deben cargar los contenidos de `/scripts` a menos que se invoque explícitamente la skill.
+2. **`.agents/skills/`**: Contains executable capabilities (Tool-use).
+    * Each subdirectory represents an **Active Skill**.
+    * The agent must read the `SKILL.md` file in each subfolder to identify the `description` and activation metadata.
+    * Do not load `/scripts` contents unless the skill is explicitly invoked.
 
-3.  **`.agents/resources/`**: Base de conocimiento estática.
-    *   Consultar estos archivos únicamente cuando se requiera información técnica específica, esquemas de datos o guías de estilo documentadas.
+3. **`.agents/resources/`** *(optional)*: Static knowledge base — create this folder when domain reference material (data schemas, style guides, coefficient tables) is needed. Do not reference it if it does not exist.
 
-## ⚙️ Protocolo de Operación
+## ⚙️ Operation Protocol
 
-*   **Descubrimiento Progresivo:** Antes de procesar una solicitud, analiza los metadatos YAML en `.agents/skills/*/SKILL.md`. Si existe una coincidencia de propósito, notifica al usuario: "Activando skill [nombre-de-skill]".
-*   **Aislamiento de Contexto:** No mezcles instrucciones de diferentes archivos de dominio a menos que la tarea sea transversal.
-*   **Precedencia:** Las instrucciones locales en la carpeta del agente tienen prioridad sobre las instrucciones genéricas del sistema del IDE.
+* **Progressive Discovery:** Before processing a request, parse the YAML metadata in `.agents/skills/*/SKILL.md`. If a purpose match exists, notify the user: "Activating skill [skill-name]".
+* **Conflict Resolution:** If multiple skills appear to match, prefer the most specific skill for the user request. If ambiguity remains after reading the metadata, ask the user which workflow to apply.
+* **Context Isolation:** Do not mix instructions from different domain files unless the task is cross-cutting.
+* **Precedence:** Local instructions in the agent folder take priority over generic IDE system instructions.
 
 ---
 
-> **Nota para el Agente:** Si detectas que falta un archivo `SKILL.md` en una subcarpeta de habilidades, informa al usuario para mantener la integridad del estándar.
+> **Note for the Agent:** If a `SKILL.md` file is missing from a skills subfolder, notify the user to maintain standard integrity.

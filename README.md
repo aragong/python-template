@@ -1,18 +1,27 @@
 # python-template
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-CC--BY--NC--ND--4.0-orange.svg)](LICENSE)
 
-General-purpose Python project template with built-in environment variable management and OpenTelemetry observability.
+General-purpose Python template with `uv`-managed dependencies, environment-based configuration, and optional OpenTelemetry instrumentation.
 
-## 🚀 Quick Start
+## Overview
 
-## 🚀 Quick Start
+This repository is a lightweight starting point for Python services, CLIs, or scientific utilities that need:
+
+- modern dependency management with `uv`
+- runtime configuration through environment variables
+- built-in logging and OpenTelemetry hooks
+- test and lint tooling preconfigured through `pytest` and `ruff`
+
+The package entry point lives in `src/__main__.py` and runs with `python -m src`.
+
+## Quick Start
 
 ### Prerequisites
 
-- **Python** ≥ 3.9 (tested up to 3.13)
-- **uv** — package manager ([install](https://docs.astral.sh/uv/))
+- Python 3.9 or newer
+- [uv](https://docs.astral.sh/uv/)
 
 ### Setup
 
@@ -20,104 +29,124 @@ General-purpose Python project template with built-in environment variable manag
 git clone https://github.com/IHCantabria/python-template.git
 cd python-template
 
-# Install dependencies
-uv sync
-
-# Copy and edit environment file (optional)
-cp .env.example .env
+# Install runtime and development dependencies
+uv sync --all-groups
 
 # Run the project
-python -m src
-
-# Run tests
-uv run pytest
+uv run python -m src
 ```
 
-## 📁 Project Structure
+### Local configuration
 
-```text
-src/
-├── __init__.py          # Package metadata exports
-├── __version__.py       # Dynamic version from pyproject.toml
-├── __main__.py          # Entry point  (`python -m src`)
-├── config/
-│   └── env.py           # Environment variable management
-└── core/
-    └── telemetry.py     # OpenTelemetry setup
-tests/
-└── test_example.py      # Example tests
-```
-
-## 🔧 Environment Variables
-
-Configure your application with a `.env` file:
+If you want to override defaults, create a `.env` file in the repository root:
 
 ```bash
-# App settings
-APP_ENVIRONMENT=local          # local | development | production
-TMP_DIR=./tmp                  # Temporary directory
-
-# Observability (optional — skip to disable tracing)
+cat > .env <<'EOF'
+APP_ENVIRONMENT=local
+TMP_DIR=./tmp
 EXPORT_TRACES=false
 OTEL_SERVICE_NAME=python-template
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+EOF
 ```
 
-## 📦 Dependencies
+The application starts without a `.env` file. OpenTelemetry setup is skipped when `OTEL_EXPORTER_OTLP_ENDPOINT` is not defined.
 
-### Production
+## Project Structure
 
-- **OpenTelemetry** — distributed tracing and log correlation
-- **python-dotenv** — `.env` file loading
+```text
+src/
+├── __init__.py
+├── __main__.py          # Package entry point
+├── __version__.py       # Project metadata from pyproject.toml
+├── config/
+│   ├── __init__.py
+│   └── env.py           # Environment loading and validation
+└── core/
+    ├── __init__.py
+    └── telemetry.py     # OpenTelemetry setup
+tests/
+└── test_example.py      # Template sanity checks
+```
 
-### Development & Testing
+## Environment Variables
 
-- **pytest** — testing framework
-- **coverage** — code coverage
-- **ruff** — linter and formatter
-
-## 🧪 Testing
+The current template reads the following variables:
 
 ```bash
-# Run all tests
+APP_ENVIRONMENT=local
+TMP_DIR=./tmp
+EXPORT_TRACES=true
+OTEL_SERVICE_NAME=python-template
+OTEL_SERVICE_VERSION=
+OTEL_TRACES_EXPORTER=
+OTEL_LOGS_EXPORTER=
+OTEL_EXPORTER_OTLP_ENDPOINT=
+OTEL_EXPORTER_OTLP_PROTOCOL=
+ENV=development
+```
+
+### Notes
+
+- `APP_ENVIRONMENT` accepts `local`, `development`, or `production`.
+- `TMP_DIR` is created automatically if it does not exist.
+- Traces are exported only when both `EXPORT_TRACES=true` and `OTEL_EXPORTER_OTLP_ENDPOINT` is set.
+- If no OTLP endpoint is configured, the application logs a warning and continues running.
+
+## Development
+
+### Run the application
+
+```bash
+uv run python -m src
+```
+
+### Run tests
+
+```bash
 uv run pytest
+```
 
-# Generate coverage report
-uv run coverage run && uv run coverage report
+### Coverage
 
-# HTML report → htmlcov/index.html
+```bash
+uv run coverage run -m pytest
+uv run coverage report
 uv run coverage html
 ```
 
-## 🛠️ Code Quality
+### Lint and format
 
 ```bash
-# Format code
-uv run ruff format .
-
-# Check and auto-fix issues
+uv run ruff check .
 uv run ruff check . --fix
+uv run ruff format .
 ```
 
-## 🐳 Docker
+## Docker
+
+The repository includes a multi-stage Dockerfile with local and deployment targets.
 
 ```bash
-# Build image (deployment target)
+# Build the deployment image
 docker build --target deployment -t python-template:latest .
 
-# Run container
-docker run -e APP_ENVIRONMENT=production python-template:latest
+# Run the container
+docker run --rm -e APP_ENVIRONMENT=production python-template:latest
 ```
 
-### VS Code Dev Container
+## VS Code Dev Container
 
-1. Install the **Dev Containers** extension.
-2. Press `Ctrl+Shift+P` → **Dev Containers: Reopen in Container**.
+The repository includes a dev container configuration that installs `uv` and common Python tooling.
 
-## 📋 License
+1. Install the Dev Containers extension.
+2. Open the command palette.
+3. Run `Dev Containers: Reopen in Container`.
+
+## License
 
 This project is licensed under **CC-BY-NC-ND-4.0**. See [LICENSE](LICENSE) for details.
 
-## © Credits
+## Credits
 
-Developed by [Germán Aragón](https://github.com/aragong) @ [IHCantabria](https://ihcantabria.com/en)
+Developed by [German Aragon](https://github.com/aragong) at [IHCantabria](https://ihcantabria.com/en).
